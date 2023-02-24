@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-#Process ID of this file
+# Displays its own PID.
+
 echo $$
