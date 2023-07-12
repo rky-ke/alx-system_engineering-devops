@@ -1,3 +1,4 @@
+#!/usr/bin/env pup
 #creates a file in /tmp
 file { 'school' :
   path    => '/tmp/school'
