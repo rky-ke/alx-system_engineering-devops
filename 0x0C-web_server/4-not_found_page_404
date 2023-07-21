@@ -1,44 +1,59 @@
-#!/usr/bin/env bash
-# sets up a new 404 error page
-sudo apt-get update
-sudo apt-get install -y nginx 
-echo "Hello World!" > index.html
-sudo mv index.html /var/www/html
+#!/bin/bash
 
-<<<<<<< HEAD
-######Previous work that got 16.6% - completed 33% checks being 4/5#####################
-#sudo apt-get -y update
-#sudo apt-get -y install nginx
-#sudo ufw allow 'Nginx HTTP'
-#echo "Ceci n'est pas une page" | sudo tee /usr/share/nginx/html/404.html
-#newlines="\\\terror_page 404 /404.html;\n\tlocation = /404.html {\n\t\troot /usr/share/nginx/html;\n\t\tinternal;\n\t}"
-#sudo sed -i "27i $newlines" /etc/nginx/sites-available/default
-#sudo service nginx restarti
+# Check if the script is run with root privileges
+if [ "$EUID" -ne 0 ]; then
+  echo "This script must be run as root. Please use sudo."
+  exit 1
+fi
 
-# correction of the above code that sets up a new 404 error page
-sudo apt-get update
-sudo apt-get install -y nginx 
-echo "Hello World!" > index.html
-sudo mv index.html /var/www/html
+# Install Nginx if it's not already installed
+apt-get update
+apt-get install -y nginx
 
-=======
->>>>>>> f7c2dad7e69f2ec56c77a1f8edce9eb471840f6e
+# Set up custom HTML file with "Hello World!"
+cat <<EOF > /var/www/html/index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hello World</title>
+</head>
+<body>
+<h1>Hello World!</h1>
+</body>
+</html>
+EOF
 
-echo "Ceci n'est pas une page" > 404.html
-sudo mv 404.html /var/www/html
-echo "server {
-   listen 80 default_server;
-   listen [::]:80 default_server;
-   
-   root /var/www/html;
-   index index.html;
-   location /redirect_me {
-      return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-   }
-   error_page 404 /404.html;
-   location = /404.html{
-      internal;
-   }
-}" > default
-sudo mv -f default /etc/nginx/sites-available/default
-sudo service nginx restart
+# Set up custom 404 page with "Ceci n'est pas une page"
+cat <<EOF > /var/www/html/404.html
+Ceci n'est pas une page
+EOF
+
+# Ensure Nginx is stopped before making any configuration changes
+service nginx stop
+
+# Configure Nginx to listen on port 80 and set up custom 404 page
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    root /var/www/html;
+    index index.html index.htm;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        root /var/www/html;
+    }
+}
+EOF
+
+# Start Nginx
+nginx
+
+echo "Nginx is now running and listening on port 80 with custom 404 page set up."
+

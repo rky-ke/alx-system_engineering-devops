@@ -1,9 +1,49 @@
-#!/usr/bin/env bash
-# Script that installs Nginx server and redirects /redirect_me
+#!/bin/bash
 
-sudo apt-get -y update
-sudo apt-get -y install nginx
-sudo ufw allow 'Nginx HTTP'
-echo "Holberton School" | sudo tee /var/www/html/index
-sudo sed -i '/listen 80 default_server/a rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4/ permanent;' /etc/nginx/sites-available/default
-sudo service nginx restart
+# Check if the script is run with root privileges
+if [ "$EUID" -ne 0 ]; then
+  echo "This script must be run as root. Please use sudo."
+  exit 1
+fi
+
+# Install Nginx if it's not already installed
+apt-get update
+apt-get install -y nginx
+
+# Set up custom HTML file with "Hello World!"
+cat <<EOF > /var/www/html/index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hello World</title>
+</head>
+<body>
+<h1>Hello World!</h1>
+</body>
+</html>
+EOF
+
+# Ensure Nginx is stopped before making any configuration changes
+service nginx stop
+
+# Configure Nginx to listen on port 80
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+}
+EOF
+
+# Start Nginx
+nginx
+
+echo "Nginx is now running and listening on port 80 with redirection set up."
