@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Update system packages
 apt-get update
 apt-get upgrade -y
