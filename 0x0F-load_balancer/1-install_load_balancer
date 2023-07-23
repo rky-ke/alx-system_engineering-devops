@@ -1,48 +1,20 @@
 #!/usr/bin/env bash
-# Update system packages
-apt-get update
-apt-get upgrade -y
+# Instal and setup haproxy
 
-# Install HAProxy
-apt-get install haproxy -y
+sudo apt-get install --no-install-recommends software-properties-common
+sudo add-apt-repository ppa:vbernat/haproxy-2.0
+sudo apt-get install haproxy=2.0.\*
 
-# Configure HAProxy
-cat <<EOL > /etc/haproxy/haproxy.cfg
-global
-    log /dev/log    local0
-    log /dev/log    local1 notice
-    chroot /var/lib/haproxy
-    user haproxy
-    group haproxy
-    daemon
+echo "
+frontend Local_Server
+	bind *:80
+	mode http
+	default_backend web-backend
 
-defaults
-    log global
-    mode http
-    option httplog
-    option dontlognull
-    timeout connect 5000
-    timeout client  50000
-    timeout server  50000
+backend web-backend
+	balance roundrobin
+	server 126591-web-01 100.24.242.252:80 check
+	server 126591-web-02 18.210.10.191:80 check
+" >> /etc/haproxy/haproxy.cfg
 
-frontend http_frontend
-    bind *:80
-    mode http
-    default_backend http_backend
-
-backend http_backend
-    mode http
-    balance roundrobin
-    server 126591-web-01 100.24.242.252:80 check
-    server 126591-web-02 34.207.83.241:80 check
-EOL
-
-# Enable HAProxy service
-cat <<EOL > /etc/default/haproxy
-ENABLED=1
-EOL
-
-# Start and enable HAProxy service
-systemctl start haproxy
-systemctl enable haproxy
-
+sudo service haproxy start
