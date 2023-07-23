@@ -36,12 +36,12 @@ cat <<EOF > /etc/nginx/sites-available/default
 server {
     listen 80;
     server_name _;
+    add_header X-Served-By \$hostname;
 
     location / {
         root /var/www/html;
         index index.html;
-        add_header X-Served-By \$hostname;
-    }
+       }
 
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
@@ -50,7 +50,8 @@ server {
     error_page 404 /404.html;
 
     location /404 {
-        root /var/www/html;        
+        root /var/www/html;
+        internal;
     }
 }
 EOF
