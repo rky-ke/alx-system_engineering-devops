@@ -35,12 +35,13 @@ service nginx stop
 cat <<EOF > /etc/nginx/sites-available/default
 server {
     listen 80;
+    listen [::]:80 default_server;
     server_name _;
-    add_header X-Served-By \$hostname;
 
     location / {
         root /var/www/html;
         index index.html;
+        add_header X-Served-By \$hostname;
        }
 
     location /redirect_me {
