@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "SSH Login Script"
-server_ip="100.24.242.252"
+server_ip="34.224.5.232"
 username="ubuntu"
 
 echo "Connecting to the remote server..."
