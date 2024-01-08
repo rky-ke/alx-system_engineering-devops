@@ -25,7 +25,7 @@ EOF
 # Configure Nginx to listen on port 80
 cat <<EOF > /etc/nginx/sites-available/default
 server {
-    listen 8080;
+    listen 80;
     server_name _;
     add_header X-Served-By $hostname;
 
