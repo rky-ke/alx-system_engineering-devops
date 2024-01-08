@@ -1,9 +1,44 @@
-#!/usr/bin/env bash
-# Script that configures Nginx server with a custom header
-sudo apt-get -y update
-sudo apt-get -y install nginx
-sudo echo "Hello World!" > sudo /var/www/html/index.html
-sudo echo "Ceci n'est pas une page" > sudo /var/www/html/404.html
-sudo sed -i "s/server_name _;/server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/rky-ke permanent;\n\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}/" /etc/nginx/sites-available/default
-sudo sed -i "s/include \/etc\/nginx\/sites-enabled\/\*;/include \/etc\/nginx\/sites-enabled\/\*;\n\tadd_header X-Served-By \"$HOSTNAME\";/" /etc/nginx/nginx.conf
-sudo service nginx start
+#!/bin/bash
+
+# Check if the script is run with root privileges
+if [ "$EUID" -ne 0 ]; then
+  echo "This script must be run as root. Please use sudo."
+  exit 1
+fi
+
+# Install Nginx if it's not already installed
+apt-get update
+apt-get install -y nginx
+
+# Set up custom HTML file with "Hello World!"
+cat <<EOF > /var/www/html/index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hello World</title>
+</head>
+<body>
+<h1>Hello World!</h1>
+</body>
+</html>
+EOF
+
+# Configure Nginx to listen on port 80
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80;
+    server_name _;
+    add_header X-Served-By $hostname;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+}
+EOF
+
+# Start Nginx
+service nginx start
+
+echo "Nginx is now running and listening on port 80."
+
