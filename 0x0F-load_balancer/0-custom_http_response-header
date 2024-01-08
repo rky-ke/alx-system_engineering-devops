@@ -22,16 +22,16 @@ cat <<EOF > /var/www/html/index.html
 </html>
 EOF
 
-# Configure Nginx to listen on port 80
+# Configure Nginx to listen on port 8080
 cat <<EOF > /etc/nginx/sites-available/default
 server {
     listen 8080;
     server_name _;
-    add_header X-Served-By $hostname;
 
     location / {
         root /var/www/html;
         index index.html;
+        add_header X-Served-By \$(hostname);
     }
 }
 EOF
@@ -39,5 +39,5 @@ EOF
 # Start Nginx
 service nginx start
 
-echo "Nginx is now running and listening on port 80."
+echo "Nginx is now running and listening on port 8080."
 
