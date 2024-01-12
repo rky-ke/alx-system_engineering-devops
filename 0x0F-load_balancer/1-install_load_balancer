@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Instal and setup haproxy
-sudo apt-get install --no-install-recommends software-properties-common
-sudo add-apt-repository ppa:vbernat/haproxy-2.0
-sudo apt-get install haproxy=2.0.\*
+apt-get install --no-install-recommends software-properties-common
+add-apt-repository ppa:vbernat/haproxy-2.8
+sudo apt-get install haproxy=2.8.\*
 
 echo "
 frontend www-http
@@ -12,8 +12,16 @@ frontend www-http
 
 backend web-backend
 	balance roundrobin
-	server 126591-web-01 100.24.242.252:80 check
-	server 126591-web-02 18.210.10.191:80 check
+	server 126591-web-01 34.224.5.232:80 check
+	server 126591-web-02 34.207.212.175:80 check
 " >> /etc/haproxy/haproxy.cfg
 
-sudo service haproxy start
+# Check if HAProxy is running
+if systemctl is-active --quiet haproxy; then
+    # HAProxy is running, reload the service
+    sudo service haproxy reload
+else
+    # HAProxy is not running, start the service
+    sudo service haproxy start
+fi
+
