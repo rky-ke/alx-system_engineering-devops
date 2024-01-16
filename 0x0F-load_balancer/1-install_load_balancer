@@ -12,7 +12,7 @@ frontend www-http
 
 backend web-backend
 	balance roundrobin
-	server 126591-web-01 34.224.5.232:80 check
+	server 126591-web-01 54.84.76.212:80 check
 	server 126591-web-02 34.207.212.175:80 check
 " >> /etc/haproxy/haproxy.cfg
 
