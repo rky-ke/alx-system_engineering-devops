@@ -22,10 +22,19 @@ cat <<EOF > /var/www/html/index.html
 </html>
 EOF
 
-# Configure Nginx to listen on port 8080
+# Set up custom 404 page with "Ceci n'est pas une page"
+cat <<EOF > /var/www/html/404.html
+Ceci n'est pas une page
+EOF
+
+# Ensure Nginx is stopped before making any configuration changes
+service nginx stop
+
+# Configure Nginx to listen on port 80 and set up custom 404 page
 cat <<EOF > /etc/nginx/sites-available/default
 server {
-    listen 80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
     server_name _;
     add_header X-Served-By \$(hostname);
 
@@ -33,11 +42,21 @@ server {
         root /var/www/html;
         index index.html;
     }
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    error_page 404 /404.html;
+    location /404 {
+        root /var/www/html;
+        internal;        
+    }
 }
 EOF
 
 # Start Nginx
 service nginx start
 
-echo "Nginx is now running and listening on port 8080."
+echo "Nginx is now running and listening on port 80 with custom 404 page set up."
 
