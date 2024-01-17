@@ -44,6 +44,6 @@ server {
 EOF
 
 # Start Nginx
-nginx
+service nginx start
 
 echo "Nginx is now running and listening on port 80 with redirection set up."
