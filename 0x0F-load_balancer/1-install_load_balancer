@@ -19,9 +19,9 @@ backend web-backend
 # Check if HAProxy is running
 if systemctl is-active --quiet haproxy; then
     # HAProxy is running, reload the service
-    sudo service haproxy reload
+    service haproxy reload
 else
     # HAProxy is not running, start the service
-    sudo service haproxy start
+    service haproxy start
 fi
 
