@@ -16,6 +16,17 @@ backend web-backend
 	server 126591-web-02 34.207.212.175:80 check
 " >> /etc/haproxy/haproxy.cfg
 
-# Start Ha[proxy Server
-service haproxy start
+# Enable HAProxy service
+sudo systemctl enable haproxy
+
+# Start HAProxy service
+sudo systemctl start haproxy
+
+# Print information on how to manage HAProxy
+echo "HAProxy is now installed and running."
+echo "You can manage HAProxy using the following commands:"
+echo "  - sudo systemctl start haproxy    # Start HAProxy service"
+echo "  - sudo systemctl stop haproxy     # Stop HAProxy service"
+echo "  - sudo systemctl restart haproxy  # Restart HAProxy service"
+echo "  - sudo systemctl status haproxy   # Check the status of HAProxy"
 
