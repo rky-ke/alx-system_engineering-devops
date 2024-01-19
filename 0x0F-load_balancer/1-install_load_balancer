@@ -2,7 +2,7 @@
 # Instal and setup haproxy
 apt-get install --no-install-recommends software-properties-common
 add-apt-repository ppa:vbernat/haproxy-2.8
-sudo apt-get install haproxy=2.8.\*
+apt-get install haproxy=2.8.\*
 
 echo "
 frontend www-http
@@ -13,15 +13,20 @@ frontend www-http
 backend web-backend
 	balance roundrobin
 	server 126591-web-01 54.84.76.212:80 check
-	server 126591-web-02 34.207.212.175:80 check
+	server 126591-web-02 3.85.54.208:80 check
 " >> /etc/haproxy/haproxy.cfg
 
-# Check if HAProxy is running
-if systemctl is-active --quiet haproxy; then
-    # HAProxy is running, reload the service
-    sudo service haproxy reload
-else
-    # HAProxy is not running, start the service
-    sudo service haproxy start
-fi
+# Enable HAProxy service
+sudo systemctl enable haproxy
+
+# Start HAProxy service
+sudo systemctl start haproxy
+
+# Print information on how to manage HAProxy
+echo "HAProxy is now installed and running."
+echo "You can manage HAProxy using the following commands:"
+echo "  - sudo systemctl start haproxy    # Start HAProxy service"
+echo "  - sudo systemctl stop haproxy     # Stop HAProxy service"
+echo "  - sudo systemctl restart haproxy  # Restart HAProxy service"
+echo "  - sudo systemctl status haproxy   # Check the status of HAProxy"
 
