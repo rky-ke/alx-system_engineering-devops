@@ -3,7 +3,6 @@
 
 from json import dump
 from requests import get
-from sys import argv
 
 if __name__ == "__main__":
     users_url = "https://jsonplaceholder.typicode.com/users"
@@ -29,5 +28,5 @@ if __name__ == "__main__":
 
         big_dict.update({user.get("id"): todo_list})
 
-    with open("todo_all_employees.json", 'w') as f:
-        dump(big_dict, f)
+    with open("todo_all_employees.json", 'w') as file:
+        dump(big_dict, file, indent=2)
