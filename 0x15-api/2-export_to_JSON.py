@@ -21,4 +21,4 @@ if __name__ == "__main__":
         todo_list.append(todo_dict)
 
     with open("{}.json".format(argv[1]), 'w') as f:
-        dump({argv[1]: todo_list}, f)
+        dump({argv[1]: todo_list}, f, indent=2)
